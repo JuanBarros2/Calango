@@ -2,6 +2,7 @@
 #include <iostream>
 #include <string>
 #include <stdlib.h>
+#include <math.h>
 
 using namespace std;
 
@@ -21,58 +22,58 @@ Animal animal;
 int actions = 0;
 int maxActions = 5;
 
-bool verifySleep(){
-    if(animal.isSleep){
-        cout << animal.nome << " está dormindo! Acorde-o!" << endl << endl;
-        return true;
+int getLevelInfluencer(){
+    return floor(animal.evolution * 0.5);
+}
+
+void cleanErrorValues(){
+    if (animal.hunger < 0) {
+        animal.hunger = 0;
     }
-    return false;
+    if (animal.energy < 0) {
+        animal.energy = 0;
+    }
+    if (animal.life < 0) {
+        animal.life = 0;
+    }
 }
 
 void feed(){
+    const int LEVEL_INFLUENCER = getLevelInfluencer();
+    if(animal.hunger != 0){
+        animal.hunger -= 2 + (1 * LEVEL_INFLUENCER);
+        if (animal.life <= 9)
+            animal.life += 1 + (floor(0.5 * LEVEL_INFLUENCER));
+        if (animal.energy != 0)
+            animal.energy -= 1 + LEVEL_INFLUENCER;
 
-    if (!verifySleep()) {
-        if(animal.hunger != 0){
-
-            if(animal.hunger < 2){
-                animal.hunger = 0;
-            }else{
-                animal.hunger -= 2;
-            }
-            if(animal.life <= 9)
-                animal.life++;
-            if(animal.energy != 0)
-                animal.energy--;
-            animal.bathroom += 2;
-            cout << animal.nome << " foi alimentado" << endl << endl;
-        }else{
-            cout << animal.nome << " não está com fome!" << endl << endl;
-        }
+        animal.bathroom += 1 + LEVEL_INFLUENCER;
+        cout << animal.nome << " foi alimentado" << endl << endl;
+    } else{
+        cout << animal.nome << " não está com fome!" << endl << endl;
     }
 }
 
 void bathroom(){
-    if (!verifySleep()) {
-        if(animal.bathroom != 0){
-            animal.bathroom = 0;
-            if(animal.energy != 0)
-                animal.energy--;
-            cout << animal.nome << " foi ao banheiro!" << endl << endl;
-        }else{
-            cout << animal.nome << " não precisa ir ao banheiro!! Execute outra ação" << endl << endl;
-        }
+    const int LEVEL_INFLUENCER = getLevelInfluencer();
+    if(animal.bathroom != 0){
+        animal.bathroom = 0;
+        if(animal.energy != 0)
+            animal.energy -= 1 + LEVEL_INFLUENCER;
+        cout << animal.nome << " foi ao banheiro!" << endl << endl;
+    } else{
+        cout << animal.nome << " não precisa ir ao banheiro!! Execute outra ação" << endl << endl;
     }
-
 }
 
 void sleep(){
-    animal.energy += 2;
-    animal.hunger += 1;
-    animal.bathroom += 1;
-    if(animal.energy < 6){
-        animal.energy = 6;
+    const int LEVEL_INFLUENCER = getLevelInfluencer();
+    animal.hunger += 1 + LEVEL_INFLUENCER;
+    animal.bathroom += 1 + floor(0.5 * LEVEL_INFLUENCER);
+    if(animal.energy < 10 + (2 * LEVEL_INFLUENCER)){
+        animal.energy += 2 + (1 * LEVEL_INFLUENCER);
     }
-    if(animal.life < 10){
+    if(animal.life < 10 + (2 * LEVEL_INFLUENCER)){
         animal.life++;
     }
     animal.isSleep = true;
@@ -184,8 +185,10 @@ int main() {
     cout << "Qual o nome do seu bichinho?" << endl;
     cin >> animal.nome;
     system("clear || cls");
+    showInfo();
     int op;
     while (menu() != 4 && animal.life > 0) {
+        cleanErrorValues();
         actions++;
         showInfo();
     }
