@@ -86,15 +86,21 @@ void wakeup(){
 
 void checkStats(){
     if(animal.bathroom > 7){
-        cout << animal.nome << " está com vontade de ir ao banheiro!! Leve-o!" << endl << endl;
+        animal.life--;
+        cout << animal.nome << " está com vontade de ir ao banheiro!!" << endl
+        << "Leve-o antes que ele perca mais vida!" << endl << endl;
     }
 
     if(animal.hunger > 7){
-        cout << animal.nome << " está com muita fome!! Alimente-o" << endl << endl;
+        animal.life--;
+        cout << animal.nome << " está com muita fome!!" << endl
+        << "Alimente-o antes que ele perca mais vida!" << endl << endl;
     }
 
-    if(animal.energy < 4){
-        cout << animal.nome << " está ficando muito cansando! Coloque-o para dormir" << endl << endl;
+    if(animal.energy < 0){
+        animal.life--;
+        cout << animal.nome << " está ficando muito cansando!" << endl
+        << "Coloque-o para dormir antes que ele perca mais vida!" << endl << endl;
     }
 
 }
@@ -128,7 +134,7 @@ void showInfo(){
 int menuSleep() {
     cout << "=== SELECIONE UMA OPÇÃO ===" << endl << endl;
     cout << "1- Acordar" << endl
-        << "2- Continuar dormindo ao banheiro" << endl
+        << "2- Continuar dormindo" << endl
         << "4 - Sair" << endl << endl
         << "Opção: ";
     int op;
@@ -179,7 +185,7 @@ int main() {
     cin >> animal.nome;
     system("clear || cls");
     int op;
-    while (menu() != 4) {
+    while (menu() != 4 && animal.life > 0) {
         actions++;
         showInfo();
     }
