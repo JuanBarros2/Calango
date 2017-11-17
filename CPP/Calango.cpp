@@ -35,7 +35,7 @@ string getString() {
         input.push_back(ch);
         ch = getch();
     }
-    
+
     return input;
 }
 
@@ -86,6 +86,7 @@ void feed(){
         stringstream ss;
         ss << animal.nome << " foi alimentado" << endl << endl;
         write(ss);
+        actions++;
     } else{
         stringstream ss;
         ss << animal.nome << " não está com fome!" << endl << endl;
@@ -101,6 +102,7 @@ void bathroom(){
             animal.energy -= 1 + LEVEL_INFLUENCER;
         stringstream ss;
         ss << animal.nome << " foi ao banheiro!" << endl << endl;
+        actions++;
     } else{
         stringstream ss;
         ss << animal.nome << " não precisa ir ao banheiro!! Execute outra ação" << endl << endl;
@@ -118,22 +120,25 @@ void sleep(){
         animal.life++;
     }
     animal.isSleep = true;
-	  stringstream ss;	
+	  stringstream ss;
     ss << animal.nome << " está dormindo!" << endl << endl;
     write(ss);
+    actions++;
 }
 
 void wakeup(){
     animal.isSleep = false;
-	  stringstream ss;	
+	  stringstream ss;
     ss << animal.nome << " acabou de acordar!!!" << endl << endl;
     write(ss);
+    ss.str("");
+    actions++;
 }
 
 void checkStats(){
     if(animal.bathroom > 7){
         animal.life--;
-		    stringstream ss;	
+		    stringstream ss;
         ss << animal.nome << " está com vontade de ir ao banheiro!!" << endl
         << "Leve-o antes que ele perca mais vida!" << endl << endl;
         write(ss);
@@ -141,7 +146,7 @@ void checkStats(){
 
     if(animal.hunger > 7){
         animal.life--;
-		    stringstream ss;	
+		    stringstream ss;
 
         ss << animal.nome << " está com muita fome!!" << endl
         << "Alimente-o antes que ele perca mais vida!" << endl << endl;
@@ -150,7 +155,7 @@ void checkStats(){
 
     if(animal.energy < 0){
         animal.life--;
-		    stringstream ss;	
+		    stringstream ss;
 
         ss << animal.nome << " está ficando muito cansando!" << endl
         << "Coloque-o para dormir antes que ele perca mais vida!" << endl << endl;
@@ -195,7 +200,6 @@ void showInfo(){
     write(ss);
     ss.str("");
 }
-
 
 int menuSleep() {
     write("=== SELECIONE UMA OPÇÃO ===\n\n");
@@ -250,7 +254,6 @@ int main() {
     int op;
     while (menu() != 4 && animal.life > 0) {
         cleanErrorValues();
-        actions++;
         showInfo();
     }
     return 0;
