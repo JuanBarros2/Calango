@@ -54,6 +54,7 @@ void write(string str) {
 
 void write(stringstream &ss) {
 	waddstr(stdscr, ss.str().c_str());
+	ss.str("");
 	wrefresh(stdscr);
 }
 
@@ -181,19 +182,17 @@ void showInfo(){
     checkStats();
     stringstream ss;
     ss << "Vida: " << animal.life << "   " << "Fome: " << animal.hunger << endl;
-    write(ss.str());
-    ss.str("");
+    write(ss);
 
     ss << "Energia: " << animal.energy << "   " << "Banheiro: " << animal.bathroom << endl << endl;
-    write(ss.str());
-    ss.str("");
+    write(ss);
 
     ss << "Status: " << (animal.isSleep ? "dormindo" : "acordado") << endl << endl;
-    write(ss.str());
-    ss.str("");
+    write(ss);
+
     ss << "Nível: " << animal.evolution << endl << endl;
     write(ss);
-    ss.str("");
+
 }
 
 int menuSleep() {
