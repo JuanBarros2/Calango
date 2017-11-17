@@ -248,7 +248,7 @@ int main() {
     showInfo();
 
     int op;
-    while (menu() != 4 && animal.life > 0) {
+    while ( animal.life > 0 && menu() != 4) {
         cleanErrorValues();
         showInfo();
     }
