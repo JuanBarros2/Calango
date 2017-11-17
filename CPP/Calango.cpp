@@ -205,6 +205,7 @@ int menuSleep() {
     write("=== SELECIONE UMA OPÇÃO ===\n\n");
     write("1- Acordar\n2- Continuar dormindo\n4 - Sair\n\nOpção: ");
     int op = nextInt();
+    getch();
     erase();
     switch (op) {
         case 1:
@@ -221,6 +222,7 @@ int menuAwake() {
     write("=== SELECIONE UMA OPÇÃO ===\n\n");
     write("1- Alimentar\n2- Levar ao banheiro\n3- Dormir\n4- Sair\n\nOpção: ");
     int op = nextInt();
+    getch();
     erase();
     switch (op) {
         case 1:
