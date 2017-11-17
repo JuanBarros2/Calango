@@ -259,12 +259,18 @@ int menu() {
     return !animal.isSleep ? menuAwake() : menuSleep();
 }
 
+void showCalango() {
+    write("                     _.....---..._\n      _..-'-.   _.--'             '--.._\n  _.-' (  0) Y''                        ''-.._\n (---.._,                                     '-._\n  `---.,___.-\\  \\----......./  /..------...____   '-.\n     _/  /  _/  /         __\\  \\   __\\  \\      `-.   \\\n    (((-'  (((-'         (((---'  (((---`         )  /\n                                               .-'.-'\n                                              (__`-,\n                                                 ``\n");
+}
+
 int main() {
     setlocale(LC_ALL, "");
     initscr();
     scrollok(stdscr,TRUE);
     noecho();
+    start_color();
 
+    showCalango();
     write("Qual o nome do seu bichinho?\n");
     animal.nome = getString();
     erase();
