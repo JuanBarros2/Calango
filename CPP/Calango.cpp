@@ -24,7 +24,20 @@ Animal animal;
 int actions = 0;
 int maxActions = 5;
 
+void drawBorders() {
+    int y, x; 
+    getyx(stdscr, y, x);
+    wborder(stdscr, '|', '|', '-', '-', '+', '+', '+', '+');
+    move(y+1,x+1);
+}
+
 string getString() {
+    // Move o cursor
+    int y, x; 
+    getyx(stdscr, y, x);
+    move(y+1,x+1);
+
+    // Pega o input
     string input;
     nocbreak();
     echo();
@@ -48,11 +61,13 @@ char nextChar() {
 }
 
 void write(string str) {
+    drawBorders();
 	waddstr(stdscr, str.c_str());
 	wrefresh(stdscr);
 }
 
 void write(stringstream &ss) {
+    drawBorders();
 	waddstr(stdscr, ss.str().c_str());
 	ss.str("");
 	wrefresh(stdscr);
@@ -131,7 +146,6 @@ void wakeup(){
 	  stringstream ss;
     ss << animal.nome << " acabou de acordar!!!" << endl << endl;
     write(ss);
-    ss.str("");
     actions++;
 }
 
