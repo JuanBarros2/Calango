@@ -9,13 +9,13 @@
 using namespace std;
 
 struct Animal {
-  int life = 5;
-  int hunger = 2;
-  int energy = 6;
-  int evolution = 1;
-  int bathroom = 0;
-  string nome;
-  bool isSleep = false;
+    int life = 5;
+    int hunger = 2;
+    int energy = 6;
+    int evolution = 1;
+    int bathroom = 0;
+    string nome;
+    bool isSleep = false;
 };
 
 typedef struct Animal Animal ;
@@ -246,6 +246,15 @@ int menuAwake() {
     return op;
 }
 
+void deathScreen() {
+    erase();
+    stringstream ss;
+    ss << "Você perdeu no nível " << animal.evolution << " D:" << endl;
+    write(ss);
+    write("Pressione qualquer tecla para sair...");
+    getch();
+}
+
 int menu() {
     return !animal.isSleep ? menuAwake() : menuSleep();
 }
@@ -266,6 +275,9 @@ int main() {
         cleanErrorValues();
         showInfo();
     }
+    
+    deathScreen();
+
     endwin();
     return 0;
 }
