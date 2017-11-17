@@ -258,6 +258,7 @@ int main() {
         cleanErrorValues();
         showInfo();
     }
+    endwin();
     return 0;
 }
 
