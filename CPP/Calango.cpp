@@ -74,6 +74,7 @@ void cleanErrorValues(){
 }
 
 void feed(){
+    stringstream ss;
     const int LEVEL_INFLUENCER = getLevelInfluencer();
     if(animal.hunger != 0){
         animal.hunger -= 2 + (1 * LEVEL_INFLUENCER);
@@ -81,31 +82,29 @@ void feed(){
             animal.life += 1 + (floor(0.5 * LEVEL_INFLUENCER));
         if (animal.energy != 0)
             animal.energy -= 1 + LEVEL_INFLUENCER;
-
         animal.bathroom += 1 + LEVEL_INFLUENCER;
-        stringstream ss;
         ss << animal.nome << " foi alimentado" << endl << endl;
         write(ss);
         actions++;
     } else{
-        stringstream ss;
         ss << animal.nome << " não está com fome!" << endl << endl;
         write(ss);
     }
 }
 
 void bathroom(){
+    stringstream ss;
     const int LEVEL_INFLUENCER = getLevelInfluencer();
     if(animal.bathroom != 0){
         animal.bathroom = 0;
         if(animal.energy != 0)
             animal.energy -= 1 + LEVEL_INFLUENCER;
-        stringstream ss;
         ss << animal.nome << " foi ao banheiro!" << endl << endl;
+        write(ss);
         actions++;
     } else{
-        stringstream ss;
         ss << animal.nome << " não precisa ir ao banheiro!! Execute outra ação" << endl << endl;
+        write(ss);
     }
 }
 
@@ -163,6 +162,7 @@ void checkStats(){
     }
 
 }
+
 void upgradeLevel(){
 
     animal.evolution++;
@@ -173,6 +173,7 @@ void upgradeLevel(){
     write(ss);
 
 }
+
 void showInfo(){
     if(actions >= maxActions)
         upgradeLevel();
@@ -187,15 +188,9 @@ void showInfo(){
     write(ss.str());
     ss.str("");
 
-    if (animal.isSleep) {
-        ss << "Status: " << "dormindo" << endl << endl;
-        write(ss.str());
-    	ss.str("");
-    } else {
-        ss << "Status: " << "acordado" << endl << endl;
-        write(ss.str());
-    	ss.str("");
-    }
+    ss << "Status: " << (animal.isSleep ? "dormindo" : "acordado") << endl << endl;
+    write(ss.str());
+    ss.str("");
     ss << "Nível: " << animal.evolution << endl << endl;
     write(ss);
     ss.str("");
