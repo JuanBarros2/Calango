@@ -112,7 +112,7 @@ void bathroom(){
 void sleep(){
     const int LEVEL_INFLUENCER = getLevelInfluencer();
     animal.hunger += 1 + LEVEL_INFLUENCER;
-    animal.bathroom += 1 + floor(0.5 * LEVEL_INFLUENCER);
+    animal.bathroom += 1 + floor(1 * LEVEL_INFLUENCER);
     if(animal.energy < 10 + (2 * LEVEL_INFLUENCER)){
         animal.energy += 2 + (1 * LEVEL_INFLUENCER);
     }
@@ -137,7 +137,7 @@ void wakeup(){
 
 void checkStats(){
     if(animal.bathroom > 7){
-        animal.life--;
+        animal.life -= (animal.bathroom - 7);
 		    stringstream ss;
         ss << animal.nome << " está com vontade de ir ao banheiro!!" << endl
         << "Leve-o antes que ele perca mais vida!" << endl << endl;
@@ -145,7 +145,7 @@ void checkStats(){
     }
 
     if(animal.hunger > 7){
-        animal.life--;
+        animal.life -= (animal.hunger - 7);
 		    stringstream ss;
 
         ss << animal.nome << " está com muita fome!!" << endl
@@ -153,7 +153,7 @@ void checkStats(){
         write(ss);
     }
 
-    if(animal.energy < 0){
+    if(animal.energy <= 0){
         animal.life--;
 		    stringstream ss;
 
