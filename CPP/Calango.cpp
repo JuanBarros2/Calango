@@ -1,7 +1,9 @@
 ﻿
 #include <iostream>
+#include <sstream>
 #include <string>
 #include <stdlib.h>
+#include <curses.h>
 
 using namespace std;
 
@@ -21,9 +23,44 @@ Animal animal;
 int actions = 0;
 int maxActions = 5;
 
+string getString() {
+    string input;
+    nocbreak();
+    echo();
+
+    int ch = getch();
+
+    while (ch != '\n') {
+        input.push_back(ch);
+        ch = getch();
+    }
+    
+    return input;
+}
+
+int nextInt() {
+	return getch() - '0';
+}
+
+char nextChar() {
+	return getch();
+}
+
+void write(string str) {
+	waddstr(stdscr, str.c_str());
+	wrefresh(stdscr);
+}
+
+void write(stringstream &ss) {
+	waddstr(stdscr, ss.str().c_str());
+	wrefresh(stdscr);
+}
+
 bool verifySleep(){
     if(animal.isSleep){
-        cout << animal.nome << " está dormindo! Acorde-o!" << endl << endl;
+        stringstream msg;
+        msg << animal.nome << " está dormindo! Acorde-o!" << endl << endl;
+        write(msg.str());
         return true;
     }
     return false;
@@ -44,9 +81,14 @@ void feed(){
             if(animal.energy != 0)
                 animal.energy--;
             animal.bathroom += 2;
-            cout << animal.nome << " foi alimentado" << endl << endl;
+            stringstream ss;
+            ss << animal.nome << " foi alimentado" << endl << endl;
+            write(ss);
         }else{
-            cout << animal.nome << " não está com fome!" << endl << endl;
+        	stringstream ss;
+
+            ss << animal.nome << " não está com fome!" << endl << endl;
+            write(ss);
         }
     }
 }
@@ -57,9 +99,11 @@ void bathroom(){
             animal.bathroom = 0;
             if(animal.energy != 0)
                 animal.energy--;
-            cout << animal.nome << " foi ao banheiro!" << endl << endl;
+           	stringstream ss;
+            ss << animal.nome << " foi ao banheiro!" << endl << endl;
         }else{
-            cout << animal.nome << " não precisa ir ao banheiro!! Execute outra ação" << endl << endl;
+        	stringstream ss;
+            ss << animal.nome << " não precisa ir ao banheiro!! Execute outra ação" << endl << endl;
         }
     }
 
@@ -76,31 +120,43 @@ void sleep(){
         animal.life++;
     }
     animal.isSleep = true;
-    cout << animal.nome << " está dormindo!" << endl << endl;
+	stringstream ss;	
+    ss << animal.nome << " está dormindo!" << endl << endl;
+    write(ss);
 }
 
 void wakeup(){
     animal.isSleep = false;
-    cout << animal.nome << " acabou de acordar!!!" << endl << endl;
+	stringstream ss;	
+    ss << animal.nome << " acabou de acordar!!!" << endl << endl;
+    write(ss);
 }
 
 void checkStats(){
     if(animal.bathroom > 7){
         animal.life--;
-        cout << animal.nome << " está com vontade de ir ao banheiro!!" << endl
+		stringstream ss;	
+        ss << animal.nome << " está com vontade de ir ao banheiro!!" << endl
         << "Leve-o antes que ele perca mais vida!" << endl << endl;
+        write(ss);
     }
 
     if(animal.hunger > 7){
         animal.life--;
-        cout << animal.nome << " está com muita fome!!" << endl
+		stringstream ss;	
+
+        ss << animal.nome << " está com muita fome!!" << endl
         << "Alimente-o antes que ele perca mais vida!" << endl << endl;
+        write(ss);
     }
 
     if(animal.energy < 0){
         animal.life--;
-        cout << animal.nome << " está ficando muito cansando!" << endl
+		stringstream ss;	
+
+        ss << animal.nome << " está ficando muito cansando!" << endl
         << "Coloque-o para dormir antes que ele perca mais vida!" << endl << endl;
+        write(ss);
     }
 
 }
@@ -109,8 +165,9 @@ void upgradeLevel(){
     animal.evolution++;
     maxActions += animal.evolution;
     actions = 0;
-
-    cout << animal.nome << " foi promovido ao nível " << animal.evolution << "!" << endl << endl;
+    stringstream ss;
+    ss << animal.nome << " foi promovido ao nível " << animal.evolution << "!" << endl << endl;
+    write(ss);
 
 }
 void showInfo(){
@@ -118,28 +175,35 @@ void showInfo(){
         upgradeLevel();
 
     checkStats();
+    stringstream ss;
+    ss << "Vida: " << animal.life << "   " << "Fome: " << animal.hunger << endl;
+    write(ss.str());
+    ss.str("");
 
-    cout << "Vida: " << animal.life << "   " << "Fome: " << animal.hunger << endl;
-    cout << "Energia: " << animal.energy << "   " << "Banheiro: " << animal.bathroom << endl << endl;
+    ss << "Energia: " << animal.energy << "   " << "Banheiro: " << animal.bathroom << endl << endl;
+    write(ss.str());
+    ss.str("");
 
-    if(animal.isSleep){
-        cout << "Status: " << "dormindo" << endl << endl;
-    }else{
-        cout << "Status: " << "acordado" << endl << endl;
+    if (animal.isSleep) {
+        ss << "Status: " << "dormindo" << endl << endl;
+        write(ss.str());
+    	ss.str("");
+    } else {
+        ss << "Status: " << "acordado" << endl << endl;
+        write(ss.str());
+    	ss.str("");
     }
-    cout << "Nível: " << animal.evolution << endl << endl;
+    ss << "Nível: " << animal.evolution << endl << endl;
+    write(ss);
+    ss.str("");
 }
 
 
 int menuSleep() {
-    cout << "=== SELECIONE UMA OPÇÃO ===" << endl << endl;
-    cout << "1- Acordar" << endl
-        << "2- Continuar dormindo" << endl
-        << "4 - Sair" << endl << endl
-        << "Opção: ";
-    int op;
-    cin >> op;
-    system("clear || cls");
+    write("=== SELECIONE UMA OPÇÃO ===\n\n");
+    write("1- Acordar\n2- Continuar dormindo\n4 - Sair\n\nOpção: ");
+    int op = nextInt();
+    erase();
     switch (op) {
         case 1:
             wakeup();
@@ -152,15 +216,10 @@ int menuSleep() {
 }
 
 int menuAwake() {
-    cout << "=== SELECIONE UMA OPÇÃO ===" << endl << endl;
-    cout << "1- Alimentar" << endl
-        << "2- Levar ao banheiro" << endl
-        << "3- Dormir" << endl
-        << "4- Sair" << endl << endl
-        << "Opção: ";
-    int op;
-    cin >> op;
-    system("clear || cls");
+    write("=== SELECIONE UMA OPÇÃO ===\n\n");
+    write("1- Alimentar\n2- Levar ao banheiro\n3- Dormir\n4- Sair\n\nOpção: ");
+    int op = nextInt();
+    erase();
     switch (op) {
         case 1:
             feed();
@@ -180,10 +239,14 @@ int menu() {
 }
 
 int main() {
+	setlocale(LC_ALL, "");
+	initscr();
+	scrollok(stdscr,TRUE);
+	noecho();
 
-    cout << "Qual o nome do seu bichinho?" << endl;
-    cin >> animal.nome;
-    system("clear || cls");
+    write("Qual o nome do seu bichinho?\n");
+    animal.nome = getString();
+    erase();
     int op;
     while (menu() != 4 && animal.life > 0) {
         actions++;
