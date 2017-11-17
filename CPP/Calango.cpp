@@ -4,6 +4,7 @@
 #include <string>
 #include <stdlib.h>
 #include <curses.h>
+#include <math.h>
 
 using namespace std;
 
@@ -56,78 +57,75 @@ void write(stringstream &ss) {
 	wrefresh(stdscr);
 }
 
-bool verifySleep(){
-    if(animal.isSleep){
-        stringstream msg;
-        msg << animal.nome << " está dormindo! Acorde-o!" << endl << endl;
-        write(msg.str());
-        return true;
+int getLevelInfluencer(){
+    return floor(animal.evolution * 0.5);
+}
+
+void cleanErrorValues(){
+    if (animal.hunger < 0) {
+        animal.hunger = 0;
     }
-    return false;
+    if (animal.energy < 0) {
+        animal.energy = 0;
+    }
+    if (animal.life < 0) {
+        animal.life = 0;
+    }
 }
 
 void feed(){
+    const int LEVEL_INFLUENCER = getLevelInfluencer();
+    if(animal.hunger != 0){
+        animal.hunger -= 2 + (1 * LEVEL_INFLUENCER);
+        if (animal.life <= 9)
+            animal.life += 1 + (floor(0.5 * LEVEL_INFLUENCER));
+        if (animal.energy != 0)
+            animal.energy -= 1 + LEVEL_INFLUENCER;
 
-    if (!verifySleep()) {
-        if(animal.hunger != 0){
-
-            if(animal.hunger < 2){
-                animal.hunger = 0;
-            }else{
-                animal.hunger -= 2;
-            }
-            if(animal.life <= 9)
-                animal.life++;
-            if(animal.energy != 0)
-                animal.energy--;
-            animal.bathroom += 2;
-            stringstream ss;
-            ss << animal.nome << " foi alimentado" << endl << endl;
-            write(ss);
-        }else{
-        	stringstream ss;
-
-            ss << animal.nome << " não está com fome!" << endl << endl;
-            write(ss);
-        }
+        animal.bathroom += 1 + LEVEL_INFLUENCER;
+        stringstream ss;
+        ss << animal.nome << " foi alimentado" << endl << endl;
+        write(ss);
+    } else{
+        stringstream ss;
+        ss << animal.nome << " não está com fome!" << endl << endl;
+        write(ss);
     }
 }
 
 void bathroom(){
-    if (!verifySleep()) {
-        if(animal.bathroom != 0){
-            animal.bathroom = 0;
-            if(animal.energy != 0)
-                animal.energy--;
-           	stringstream ss;
-            ss << animal.nome << " foi ao banheiro!" << endl << endl;
-        }else{
-        	stringstream ss;
-            ss << animal.nome << " não precisa ir ao banheiro!! Execute outra ação" << endl << endl;
-        }
+    const int LEVEL_INFLUENCER = getLevelInfluencer();
+    if(animal.bathroom != 0){
+        animal.bathroom = 0;
+        if(animal.energy != 0)
+            animal.energy -= 1 + LEVEL_INFLUENCER;
+        stringstream ss;
+        ss << animal.nome << " foi ao banheiro!" << endl << endl;
+    } else{
+        stringstream ss;
+        ss << animal.nome << " não precisa ir ao banheiro!! Execute outra ação" << endl << endl;
     }
-
 }
 
 void sleep(){
-    animal.energy += 2;
-    animal.hunger += 1;
-    animal.bathroom += 1;
-    if(animal.energy < 6){
-        animal.energy = 6;
+    const int LEVEL_INFLUENCER = getLevelInfluencer();
+    animal.hunger += 1 + LEVEL_INFLUENCER;
+    animal.bathroom += 1 + floor(0.5 * LEVEL_INFLUENCER);
+    if(animal.energy < 10 + (2 * LEVEL_INFLUENCER)){
+        animal.energy += 2 + (1 * LEVEL_INFLUENCER);
     }
-    if(animal.life < 10){
+    if(animal.life < 10 + (2 * LEVEL_INFLUENCER)){
         animal.life++;
     }
     animal.isSleep = true;
-	stringstream ss;	
+	  stringstream ss;	
     ss << animal.nome << " está dormindo!" << endl << endl;
     write(ss);
 }
 
 void wakeup(){
     animal.isSleep = false;
-	stringstream ss;	
+	  stringstream ss;	
     ss << animal.nome << " acabou de acordar!!!" << endl << endl;
     write(ss);
 }
@@ -135,7 +133,7 @@ void wakeup(){
 void checkStats(){
     if(animal.bathroom > 7){
         animal.life--;
-		stringstream ss;	
+		    stringstream ss;	
         ss << animal.nome << " está com vontade de ir ao banheiro!!" << endl
         << "Leve-o antes que ele perca mais vida!" << endl << endl;
         write(ss);
@@ -143,7 +141,7 @@ void checkStats(){
 
     if(animal.hunger > 7){
         animal.life--;
-		stringstream ss;	
+		    stringstream ss;	
 
         ss << animal.nome << " está com muita fome!!" << endl
         << "Alimente-o antes que ele perca mais vida!" << endl << endl;
@@ -152,7 +150,7 @@ void checkStats(){
 
     if(animal.energy < 0){
         animal.life--;
-		stringstream ss;	
+		    stringstream ss;	
 
         ss << animal.nome << " está ficando muito cansando!" << endl
         << "Coloque-o para dormir antes que ele perca mais vida!" << endl << endl;
@@ -239,16 +237,19 @@ int menu() {
 }
 
 int main() {
-	setlocale(LC_ALL, "");
-	initscr();
-	scrollok(stdscr,TRUE);
-	noecho();
+    setlocale(LC_ALL, "");
+    initscr();
+    scrollok(stdscr,TRUE);
+    noecho();
 
     write("Qual o nome do seu bichinho?\n");
     animal.nome = getString();
     erase();
+    showInfo();
+
     int op;
     while (menu() != 4 && animal.life > 0) {
+        cleanErrorValues();
         actions++;
         showInfo();
     }
