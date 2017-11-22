@@ -25,7 +25,7 @@ int actions = 0;
 int maxActions = 5;
 
 void drawBorders() {
-    int y, x; 
+    int y, x;
     getyx(stdscr, y, x);
     wborder(stdscr, '|', '|', '-', '-', '+', '+', '+', '+');
     move(y+1,x+1);
@@ -33,7 +33,7 @@ void drawBorders() {
 
 string getString() {
     // Move o cursor
-    int y, x; 
+    int y, x;
     getyx(stdscr, y, x);
     move(y+1,x+1);
 
