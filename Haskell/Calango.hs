@@ -23,21 +23,32 @@ menu animal = do
  putStrLn ("1 - Alimentar")
  putStrLn ("2 - Ir ao Banheiro")
  putStrLn ("3 - Dormir")
- putStrLn ("4 - Sair")
+ putStrLn ("4 - Acariciar")
+ putStrLn ("0 - Sair")
  option <- getLine
  executeOption animal (read option::Int)
 
 executeOption :: Animal -> Int -> IO Animal
 executeOption animal 1 = feed ( decreaseByRound animal)
 executeOption animal 3 = sleep ( decreaseByRound animal)
-executeOption animal 4 = return ( decreaseByRound animal)
+executeOption animal 4 = toCaress (decreaseByRound animal)
+executeOption animal 0 = return ( decreaseByRound animal)
 executeOption animal _ = do
                            putStrLn("\nOpção Inválida! Tente novamente...")
                            putStr("\nPressione <Enter> para voltar ao menu...")
                            getChar
                            menu animal
-      where animal = (decreaseByRound animal)
 
+
+decreaseByRound :: Animal -> Animal
+decreaseByRound (Animal { name = n, stomach = s, life = l, caress = c, energy = e, turns = t, isSleep = sleep}) = Animal {
+  name = n,
+  stomach = if(s <= 5) then 0 else (s - 5),
+  life = if(s <= 15) then (l - 20) else l,
+  caress = c,
+  energy = e,
+  turns = (t + 1),
+  isSleep = sleep}
 
 -- Ainda não há conceito de níveis, nem de experiência
 -- As interações ainda não verifica estados dos atributos (se atingiu limite superior ou se chegou abaixo de 0)
@@ -57,15 +68,6 @@ calcFeed Animal { name = n, stomach = s, life = l, caress = c, energy = e, turns
   turns = t + 1,
   isSleep = sleep}
 
-decreaseByRound :: Animal -> Animal
-decreaseByRound (Animal { name = n, stomach = s, life = l, caress = c, energy = e, turns = t, isSleep = sleep}) = Animal {
-  name = n,
-  stomach = if(s <= 5) then 0 else (s - 5),
-  life = if(s <= 15) then (l - 20) else l,
-  caress = c,
-  energy = e,
-  turns = (t + 1),
-  isSleep = sleep}
 
 -- Função sleep única: Ainda não há o estado "dormindo"
 sleep :: Animal -> IO Animal
@@ -80,6 +82,23 @@ calcSleep (Animal { name = n, stomach = h, life = l, caress = c, energy = e, tur
   stomach = (h - 20),
   life = l,
   caress = c,
+  energy = e ,
+  turns = (t + 1),
+  isSleep = sleep}
+
+
+toCaress :: Animal -> IO Animal
+toCaress animal = do
+                  let updatedAnimal = calcToCaress animal
+                  putStrLn (showStatus updatedAnimal)
+                  menu updatedAnimal
+
+calcToCaress :: Animal -> Animal
+calcToCaress (Animal { name = n, stomach = h, life = l, caress = c, energy = e, turns = t, isSleep = sleep}) = Animal {
+  name = n,
+  stomach = h,
+  life = l,
+  caress = c + 40,
   energy = e ,
   turns = (t + 1),
   isSleep = sleep}
