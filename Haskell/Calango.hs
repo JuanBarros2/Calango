@@ -108,6 +108,7 @@ showStatus :: Animal -> String
 showStatus (Animal {name = n, stomach = h, life = l, caress = c, energy = e,
                turns = t, isSleep = sleep})
     | h <= 20 = "PERIGO EMINENTE!!! " ++ n ++ " está a com fome alta, alimente-o já!\n" ++ status
+    | c <= 20 = "CARÊNCIA CRÍTICA!! Parece que você é um verdadeito BRUTA-MONTES, cuide do seu calango seu(a) cabra da peste!!"
     | otherwise = status
     where status = "Nome: " ++ n ++ "\nVida: " ++ show l ++ " Estomago: " ++ show h ++ "% Carinho: " ++ show c ++ "% Energia: "
                       ++ show e ++ "%"
