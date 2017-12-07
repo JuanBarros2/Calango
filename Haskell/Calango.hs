@@ -79,5 +79,8 @@ calcSleep (Animal { name = n, stomach = h, energy = e, turns = t, isSleep = slee
 -- Sem função de limpar tela, por enquanto
 showStatus :: Animal -> String
 showStatus (Animal {name = n, stomach = h, energy = e,
-               turns = t, isSleep = sleep}) = "Nome: " ++ n ++ " Estomago: " ++ show h ++ "% Energia: "
+               turns = t, isSleep = sleep})
+    | h <= 20 = "PERIGO EMINENTE!!! " ++ n ++ " está a com fome alta, alimente-o já!\n" ++ status
+    | otherwise = status
+    where status = "Nome: " ++ n ++ " Estomago: " ++ show h ++ "% Energia: "
                       ++ show e ++ "%"
