@@ -12,7 +12,7 @@ main = do
 
   putStrLn ("Qual o nome do seu bichinho?")
   nomeBichinho <- getLine
-  let novoAnimal = Animal { name = nomeBichinho, stomach = 75, life = 100, caress = 0, energy = 100, turns = 1, isSleep = False }
+  let novoAnimal = Animal { name = nomeBichinho, stomach = 75, life = 100, caress = 100, energy = 100, turns = 1, isSleep = False }
   menu novoAnimal
 
   putStrLn "\nO programa foi encerrado"
@@ -45,7 +45,7 @@ decreaseByRound (Animal { name = n, stomach = s, life = l, caress = c, energy = 
   name = n,
   stomach = if(s <= 5) then 0 else (s - 5),
   life = if(s <= 15) then (l - 20) else l,
-  caress = c,
+  caress = if(c <= 10) then 0 else (c - 10),
   energy = e,
   turns = (t + 1),
   isSleep = sleep}
