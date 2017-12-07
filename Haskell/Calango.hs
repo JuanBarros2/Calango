@@ -2,6 +2,7 @@ data Animal = Animal { name :: String
                , stomach :: Int
                , energy :: Int
                , life :: Int
+               , caress :: Int
                , turns :: Int
                , isSleep :: Bool
                } deriving (Show)
@@ -11,7 +12,7 @@ main = do
 
   putStrLn ("Qual o nome do seu bichinho?")
   nomeBichinho <- getLine
-  let novoAnimal = Animal { name = nomeBichinho, stomach = 75, life = 100, energy = 100, turns = 1, isSleep = False }
+  let novoAnimal = Animal { name = nomeBichinho, stomach = 75, life = 100, caress = 0, energy = 100, turns = 1, isSleep = False }
   menu novoAnimal
 
   putStrLn "\nO programa foi encerrado"
@@ -47,19 +48,21 @@ feed animal = do
               menu updatedAnimal
 
 calcFeed :: Animal -> Animal
-calcFeed Animal { name = n, stomach = s, life = l, energy = e, turns = t, isSleep = sleep } = Animal {
+calcFeed Animal { name = n, stomach = s, life = l, caress = c, energy = e, turns = t, isSleep = sleep } = Animal {
   name = n,
   stomach = if(s >= 75) then 100 else (s + 25),
   life = l,
+  caress = if(c >= 95) then 100 else if (s < 95) then (c + 5) else c,
   energy = e,
   turns = t + 1,
   isSleep = sleep}
 
 decreaseByRound :: Animal -> Animal
-decreaseByRound (Animal { name = n, stomach = s, life = l, energy = e, turns = t, isSleep = sleep}) = Animal {
+decreaseByRound (Animal { name = n, stomach = s, life = l, caress = c, energy = e, turns = t, isSleep = sleep}) = Animal {
   name = n,
   stomach = if(s <= 5) then 0 else (s - 5),
   life = if(s <= 15) then (l - 20) else l,
+  caress = c,
   energy = e,
   turns = (t + 1),
   isSleep = sleep}
@@ -72,19 +75,20 @@ sleep animal = do
                menu updatedAnimal
 
 calcSleep :: Animal -> Animal
-calcSleep (Animal { name = n, stomach = h, life = l, energy = e, turns = t, isSleep = sleep}) = Animal {
+calcSleep (Animal { name = n, stomach = h, life = l, caress = c, energy = e, turns = t, isSleep = sleep}) = Animal {
   name = n,
   stomach = (h - 20),
   life = l,
+  caress = c,
   energy = e ,
   turns = (t + 1),
   isSleep = sleep}
 
 -- Sem função de limpar tela, por enquanto
 showStatus :: Animal -> String
-showStatus (Animal {name = n, stomach = h, life = l, energy = e,
+showStatus (Animal {name = n, stomach = h, life = l, caress = c, energy = e,
                turns = t, isSleep = sleep})
     | h <= 20 = "PERIGO EMINENTE!!! " ++ n ++ " está a com fome alta, alimente-o já!\n" ++ status
     | otherwise = status
-    where status = "Nome: " ++ n ++ "\nVida: " ++ show l ++ " Estomago: " ++ show h ++ "% Energia: "
+    where status = "Nome: " ++ n ++ "\nVida: " ++ show l ++ " Estomago: " ++ show h ++ "% Carinho: " ++ show c ++ "% Energia: "
                       ++ show e ++ "%"
