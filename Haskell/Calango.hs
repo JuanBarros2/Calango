@@ -58,13 +58,20 @@ executeOption animal _ anyValue = do
   menu animal anyValue
 
 
+-- As funções de inscrease e decrease do sleep calculam a energia (por round) de forma que não ultrapasse o range [0, 100] --
+increaseSleep :: Int -> Int
+increaseSleep energy = if (energy >= 80) then 100 else (energy + 20)
+
+decreaseSleep :: Int -> Int
+decreaseSleep energy = if (energy <= 5) then 0 else (energy - 5)
+
 decreaseByRound :: Animal -> Animal
 decreaseByRound (Animal { name = n, stomach = s, life = l, caress = c, energy = e, turns = t, isSleep = sleep, cleanness = cl}) = Animal {
     name = n,
     stomach = if(s <= 5) then 0 else (s - 5),
-    life = if calculateLife l s e cl sleep <= 0 then 0 else calculateLife l s e cl sleep,
+    life = if calculateLife l s e cl sleep <= 0 then 0 else if (calculateLife l s e cl sleep >= 100) then 100 else calculateLife l s e cl sleep,
     caress = if(c <= 10) then 0 else (c - 10),
-    energy = if (sleep) then e + 20 else e - 5,
+    energy = if (sleep) then increaseSleep e else decreaseSleep e,
     turns = (t + 1),
     isSleep = sleep,
     cleanness = cl
@@ -130,7 +137,7 @@ calcSleep :: Animal -> Animal
 calcSleep (Animal { name = n, stomach = h, life = l, caress = c, energy = e, turns = t, isSleep = sleep, cleanness = cl}) = Animal {
     name = n,
     stomach = h,
-    life = l + 2,
+    life = if (l > 98) then 100 else (l + 2),
     caress = c,
     energy = if(e >= 80) then 100 else (e + 20),
     turns = (t + 1),
@@ -150,7 +157,7 @@ calcToCaress (Animal { name = n, stomach = h, life = l, caress = c, energy = e, 
     name = n,
     stomach = h,
     life = l,
-    caress = c + 40,
+    caress = if (c >= 60) then 100 else (c + 40),
     energy = e ,
     turns = (t + 1),
     isSleep = sleep,
