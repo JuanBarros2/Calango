@@ -1,4 +1,4 @@
-data Animal = Animal { 
+data Animal = Animal {
     name :: String,
     stomach :: Int,
     energy :: Int,
@@ -10,14 +10,36 @@ data Animal = Animal {
   } deriving (Show)
 
 main = do
-  showDivisor
-  putStrLn ("\nBem vindo!")
-  putStrLn ("Qual o nome do seu bichinho?")
+    putStrLn (" =========================================== \n")
+    putStrLn ("|                                           |\n")
+    putStrLn ("|                CALANGO                    |\n")
+    putStrLn ("|                                           |\n")
+    putStrLn ("|           1- Começar jogo                 |\n")
+    putStrLn ("|           2- Instruções                   |\n")
+    putStrLn ("|           3- Sair                         |\n")
+    putStrLn ("|                                           |\n")
+    putStrLn (" =========================================== \n")
+    opcao <- getLine
+    selectStart (read opcao)
+    if (read opcao) == 3 then putStr("Fim") else main
 
+selectStart :: Int -> IO ()
+selectStart 1 = startGame
+selectStart 2 = putStrLn "Aqui ficam as instruções para jogar"
+selectStart _ = putStr ""
+
+
+startGame :: IO ()
+startGame = do
+  putStrLn ("Qual o nome do seu bichinho?")
   nomeBichinho <- getLine
   let novoAnimal = Animal { name = nomeBichinho, stomach = 75, life = 100, caress = 100, energy = 100, turns = 1, isSleep = False, cleanness = 100 }
   menu novoAnimal False
-  putStrLn "\nO programa foi encerrado"
+  putStrLn (("\n" ++ nomeBichinho) ++ " morreu :/")
+
+instructions :: IO ()
+instructions = do
+  putStrLn "O seu bichinho virtual precisa de ajuda para sobreviver "
 
 menu :: Animal -> Bool -> IO Animal
 menu animal False = do
