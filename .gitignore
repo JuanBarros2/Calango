@@ -6,6 +6,7 @@ CPP/Calango
 *.slo
 *.lo
 *.o
+*.hi
 *.obj
 
 # Precompiled Headers
@@ -31,5 +32,8 @@ CPP/Calango
 *.exe
 *.out
 *.app
+
+# VSCode
+.vscode/
 
 Haskell/Calango
