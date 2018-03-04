@@ -1,28 +1,39 @@
-:- initialization(main).
+#:- initialization(menuInit(1)).
 
-main:- write("              CALANGO"), nl, 
-    write("    1- Jogar"), nl, 
-    write("    2- Instruções"), nl,
-    write("     3- Sair"), nl, 
-    read(INPUT),
-    menuInit(INPUT).
+main:-  write("    CALANGO"), nl, 
+        write("    1- Jogar"), nl, 
+        write("    2- Instruções"), nl,
+        write("    3- Sair"), nl, 
+        read(INPUT),
+        menuInit(INPUT),
+        main.
 
-menuInit(1):- starGame.
+menuInit(1):- startGame.
+menuInit(2):- instructions.
+menuInit(3):- halt(0).
 
-starGame:- write("Qual o nome do seu calango?"),
-    read(NAME), mainCircle(NAME, 100, 100, 100, 100, 100).
+instructions:- write("").
 
-mainCircle(NAME, FOOD, CLEAR, ENERGY, LOVE, LIFE):- 
-    decreaseTurn,
-    printInfo(FOOD, CLEAR, ENERGY, LOVE, LIFE).
+startGame:- 
+    writeln("Digite o nome do seu calango:"),
+    read(NAME),
+    mainCircle(NAME, 100, 100, 100, 100, 100).
 
-mainCircle(NAME, FOOD, CLEAR, ENERGY, LOVE, 0):- 
-    write(DEAD + " morreu"), main.
+mainCircle(NAME, C, F, E, L, 0):- write(NAME), write(" morreu").
+mainCircle(NAME, CLEAR, FOOD, ENERGY, LOVE, LIFE):- 
+    printInfo(CLEAR, FOOD, ENERGY, LOVE, LIFE),
+    decreaseLife(LIFE, NEWLIFE),
+    mainCircle(NAME, CLEAR, FOOD, ENERGY, LOVE, NEWLIFE).
 
-printInfo(F, C, E, L, LI):- write(F), nl, 
-                        write(C), nl,
-                        write(E), nl,
-                        write(L), nl,
-                        write(LI), nl.
+getOption().
+
+decreaseLife(LIFE, NEWLIFE):- NEWLIFE is LIFE - 10.
+
+printInfo(CLEAR, FOOD, ENERGY, LOVE, LIFE):- 
+    writeln(FOOD), 
+    writeln(CLEAR),
+    writeln(ENERGY),
+    writeln(LOVE),
+    writeln(LIFE).
 
 decreaseTurn:- write("").
