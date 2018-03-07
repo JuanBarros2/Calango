@@ -1,4 +1,4 @@
-:- initialization(mainCircle(juan, 100, 100, 100, 100, 100)).
+:- initialization(mainCircle(juan, 100, 100, 100, 100, 100, false)).
 
 main:-  write("    CALANGO"), nl, 
         write("    1- Jogar"), nl, 
@@ -17,15 +17,19 @@ instructions:- write("").
 startGame:- 
     writeln("Digite o nome do seu calango:"),
     read(NAME),
-    mainCircle(NAME, 100, 100, 100, 100, 100).
+    mainCircle(NAME, 100, 100, 100, 100, 100, false).
 
-mainCircle(NAME, F, C, E, L, 0):- write(NAME), write(" morreu").
-mainCircle(NAME, FOOD, CLEAR, ENERGY, LOVE, LIFE):- 
+mainCircle(NAME, F, C, E, L, 0, S):- write(NAME), write(" morreu").
+mainCircle(NAME, FOOD, CLEAR, ENERGY, LOVE, LIFE, true):-
+    printInfo(NAME, FOOD, CLEAR, ENERGY, LOVE),
+    getActionSleep(ACTION),
+    actionSleep(NAME, FOOD, CLEAR, ENERGY, LOVE, LIFE, true, ACTION).
+mainCircle(NAME, FOOD, CLEAR, ENERGY, LOVE, LIFE, SLEEP):- 
     printInfo(NAME, FOOD, CLEAR, ENERGY, LOVE),
     getAction(ACTION),
-    actionGame(FOOD, CLEAR, ENERGY, LOVE, NFOOD, NCLEAR, NENERGY, NLOVE, ACTION),
+    actionGame(FOOD, CLEAR, ENERGY, LOVE, SLEEP, NFOOD, NCLEAR, NENERGY, NLOVE, NSLEEP, ACTION),
     decreaseTurn(NCLEAR, NFOOD, NENERGY, NLOVE, DCLEAR, DFOOD, DENERGY, DLOVE),
-    mainCircle(NAME, DCLEAR, DFOOD, DENERGY, DLOVE, LIFE).
+    mainCircle(NAME, DCLEAR, DFOOD, DENERGY, DLOVE, LIFE, NSLEEP).
 
 getAction(ACTION):- writeln("1- Alimentar"),
     writeln("2- Limpar"),
@@ -33,9 +37,23 @@ getAction(ACTION):- writeln("1- Alimentar"),
     writeln("4- Dar carinho"),
     read(ACTION).
 
-actionGame(FOOD, CLEAR, ENERGY, LOVE, NEFOOD, NECLEAR, NENERGY, NLOVE, 1):- NEFOOD is FOOD + 25, NECLEAR is CLEAR, NENERGY is ENERGY, NLOVE is LOVE + 5.
-actionGame(FOOD, CLEAR, ENERGY, LOVE, NEFOOD, NECLEAR, NENERGY, NLOVE, 2):- NEFOOD is FOOD, NECLEAR is 100, NENERGY is ENERGY, NLOVE is LOVE + 5.
-actionGame(FOOD, CLEAR, ENERGY, LOVE, NEFOOD, NECLEAR, NENERGY, NLOVE, 4):- NEFOOD is FOOD, NECLEAR is CLEAR, NENERGY is ENERGY, NLOVE is LOVE + 40.
+actionGame(FOOD, CLEAR, ENERGY, LOVE, SLEEP, NFOOD, NCLEAR, NENERGY, NLOVE, NSLEEP, 1):- NFOOD is FOOD + 25, NCLEAR is CLEAR, NENERGY is ENERGY, NLOVE is LOVE + 5, NSLEEP=false.
+actionGame(FOOD, CLEAR, ENERGY, LOVE, SLEEP, NFOOD, NCLEAR, NENERGY, NLOVE, NSLEEP, 2):- NFOOD is FOOD, NCLEAR is 100, NENERGY is ENERGY, NLOVE is LOVE + 5, NSLEEP=false.
+actionGame(FOOD, CLEAR, ENERGY, LOVE, SLEEP, NFOOD, NCLEAR, NENERGY, NLOVE, NSLEEP, 4):- NFOOD is FOOD, NCLEAR is CLEAR, NENERGY is ENERGY, NLOVE is LOVE + 40, NSLEEP=false.
+actionGame(FOOD, CLEAR, ENERGY, LOVE, SLEEP, NFOOD, NCLEAR, NENERGY, NLOVE, NSLEEP, 3):- NFOOD is FOOD, NCLEAR is CLEAR, NENERGY is ENERGY + 20, NLOVE is LOVE, NSLEEP=true.
+
+actionSleep(NAME, FOOD, CLEAR, ENERGY, LOVE, LIFE, SLEEP, 2):-
+    actionGame(FOOD, CLEAR, ENERGY, LOVE, SLEEP, NFOOD, NCLEAR, NENERGY, NLOVE, NSLEEP, 3),
+    decreaseTurn(NCLEAR, NFOOD, NENERGY, NLOVE, DCLEAR, DFOOD, DENERGY, DLOVE),
+    mainCircle(NAME, DCLEAR, DFOOD, DENERGY, DLOVE, LIFE, NSLEEP).
+actionSleep(NAME, FOOD, CLEAR, ENERGY, LOVE, LIFE, SLEEP, 1):-
+    NFOOD is FOOD, NCLEAR is CLEAR, NENERGY is ENERGY, NLOVE is LOVE + 5, NSLEEP=false,
+    decreaseTurn(NCLEAR, NFOOD, NENERGY, NLOVE, DCLEAR, DFOOD, DENERGY, DLOVE),
+    mainCircle(NAME, DCLEAR, DFOOD, DENERGY, DLOVE, LIFE, NSLEEP).
+
+getActionSleep(ACTION):- writeln("1- Acordar"),
+    writeln("2- Continuar dormindo"),
+    read(ACTION).
 
 decreaseTurn(FOOD, CLEAR, ENERGY, LOVE, NFOOD, NCLEAR, NENERGY, NLOVE):- NFOOD is FOOD - 5, NCLEAR is CLEAR - 10, NENERGY is ENERGY, NLOVE is LOVE.
 
