@@ -116,7 +116,6 @@ decreaseTurn(FOOD, CLEAR, ENERGY, LOVE, LIFE, NFOOD, NCLEAR, NENERGY, NLOVE, LIF
     NCLEAR is CLEAR - 10,
     NENERGY is ENERGY - 5,
     NLOVE is LOVE - 10,
-    valid(NFOOD, NCLEAR, NENERGY, NLOVE, LIFE),
     not(critical(NLOVE, NFOOD, NENERGY, NCLEAR)).
 
 %%%%% critical messages %%%%%
@@ -135,8 +134,8 @@ criticalEnergy(ENERGY):-
   ENERGY =< 30,
   writeln("SONO CRÍTICO!!! Seu calango precisa de um descanso ou não terá energia para escapar de predadores. Apague a luz!").
 criticalTrash(CLEAR):-
-  CLEAR =< 70,
-  writeln("PERIGO EMINENTE!!! Seu calango está a com fome alta, alimente-o já!").
+  CLEAR =< 50,
+  writeln("QUE SUJEIRA!!! Seu calango está cambaleando no lixo!").
 %%%%% critical messages %%%%%
 
 
