@@ -57,14 +57,15 @@ getAction(ACTION):-
     read(ACTION).
 
 actionGame(FOOD, CLEAR, ENERGY, LOVE, _, LIFE, NFOOD, NCLEAR, NENERGY, NLOVE, NSLEEP, LIFE, 1):- % alimentar
-    NFOOD is FOOD + 25,
+    checkUpperLimits(FOOD + 25, Z),
+    NFOOD is Z + 5,
     NCLEAR is CLEAR,
     NENERGY is ENERGY,
     NLOVE is LOVE + 5,
     NSLEEP=false.
 actionGame(FOOD, CLEAR, ENERGY, LOVE, _, LIFE, NFOOD, NCLEAR, NENERGY, NLOVE, NSLEEP, LIFE, 2):- % limpar
     NFOOD is FOOD,
-    NCLEAR is CLEAR + 45,
+    NCLEAR is 110,
     NENERGY is ENERGY,
     NLOVE is LOVE + 5,
     NSLEEP=false.
@@ -76,17 +77,19 @@ actionGame(FOOD, CLEAR, ENERGY, LOVE, _, LIFE, NFOOD, NCLEAR, NENERGY, NLOVE, NS
     NLIFE is LIFE + 2,
     NSLEEP=true.
 actionGame(FOOD, CLEAR, ENERGY, LOVE, _, LIFE, NFOOD, NCLEAR, NENERGY, NLOVE, NSLEEP, LIFE, 4):- % dar carinho
+    checkUpperLimits(LOVE + 40, Z),
     NFOOD is FOOD,
     NCLEAR is CLEAR,
     NENERGY is ENERGY,
-    NLOVE is LOVE + 40,
+    NLOVE is Z + 10,
     NSLEEP=false.
-actionGame(FOOD, CLEAR, ENERGY, LOVE, _, LIFE, NFOOD, NCLEAR, NENERGY, NLOVE, NSLEEP, NLIFE, 5):- % dar carinho
+actionGame(FOOD, CLEAR, ENERGY, LOVE, _, LIFE, NFOOD, NCLEAR, NENERGY, NLOVE, NSLEEP, NLIFE, 5):- % dar injecao
+    checkUpperLimits(LIFE + 50, Z),
     NFOOD is FOOD,
     NCLEAR is CLEAR,
     NENERGY is ENERGY,
     NLOVE is LOVE - 30,
-    NLIFE is LIFE + 50,
+    NLIFE is Z + 20,
     NSLEEP=false.
 actionGame(_, _, _, _, _, _, _, _, _, _, _, _, ACTION):- nome(NAME), mainCircle(JUAN, _, _, _, _, ACTION, _). % matar
 
@@ -110,11 +113,16 @@ getActionSleep(ACTION):-
     read(ACTION).
 
 hasDiscounted(FOOD, CLEAR, ENERGY, LOVE, LIFE, NFOOD, NCLEAR, NENERGY, NLOVE, NLIFE):-
-    NFOOD is FOOD - 5,
-    NCLEAR is CLEAR - 10,
-    NENERGY is ENERGY - 5,
-    NLOVE is LOVE - 10,
-    NLIFE is LIFE - 20.
+    checkLowerLimits(FOOD - 5,ZFOOD),
+    checkLowerLimits(CLEAR - 10,ZCLEAR),
+    checkLowerLimits(ENERGY - 5,ZENERGY),
+    checkLowerLimits(LOVE - 10,ZLOVE),
+    checkLowerLimits(LIFE - 20,ZLIFE),
+    NFOOD is ZFOOD,
+    NCLEAR is ZCLEAR,
+    NENERGY is ZENERGY,
+    NLOVE is ZLOVE,
+    NLIFE is ZLIFE.
 decreaseTurn(FOOD, CLEAR, ENERGY, LOVE, LIFE, NFOOD, NCLEAR, NENERGY, NLOVE, NLIFE):-
     hasDiscounted(FOOD, CLEAR, ENERGY, LOVE, LIFE, NFOOD, NCLEAR, NENERGY, NLOVE, NLIFE),
     criticalLove(NLOVE).
@@ -133,6 +141,18 @@ decreaseTurn(FOOD, CLEAR, ENERGY, LOVE, LIFE, NFOOD, NCLEAR, NENERGY, NLOVE, LIF
     NENERGY is ENERGY - 5,
     NLOVE is LOVE - 10,
     not(critical(NLOVE, NFOOD, NENERGY, NCLEAR)).
+
+checkUpperLimits(X,Z) :-
+    (  X > 100
+    -> Z = 100
+    ;  Z = X
+    ).
+
+checkLowerLimits(X,Z) :-
+    (  X < 0
+    -> Z = 0
+    ;  Z = X
+    ).
 
 %%%%% critical messages %%%%%
 critical(L, F, E, C):-
