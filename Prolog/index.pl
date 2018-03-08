@@ -12,7 +12,21 @@ menuInit(1):- startGame.
 menuInit(2):- instructions.
 menuInit(3):- halt(0).
 
-instructions:- write("").
+instructions:-
+  write("O seu bichinho virtual precisa de ajuda para sobreviver. Você precisa manter seus níveis "),
+  write("sempre no máximo. Ao inicilizar o jogo, você verá marcadores que vão de 0% a 100%. Cada "),
+  write("marcador é afetado pela ação que você toma. Para entender como as ações influenciam, segue "),
+  write("abaixo uma tabela de Ações e Reações para cada instrução:"),
+  tableInstruction.
+
+tableInstruction:-
+  writeln("\n"),
+  writeln("Alimentar = +25% de Estômago; +5% de Carinho; -10% de Limpeza;"),
+  writeln("Limpar o ambiente = +45% de Limpeza; +5% de Carinho;"),
+  writeln("Desligar a luz/Continuar dormindo = +20% de Energia; +2% de Vida;"),
+  writeln("Brincar = +40% de Carinho;"),
+  writeln("Aplicar injeção = +50% de Vida; -30% de Carinho;"),
+  writeln("").
 
 startGame:-
     writeln("Digite o nome do seu calango:"),
@@ -29,13 +43,14 @@ mainCircle(NAME, FOOD, CLEAR, ENERGY, LOVE, LIFE, SLEEP):-
     getAction(ACTION),
     actionGame(FOOD, CLEAR, ENERGY, LOVE, SLEEP, LIFE, NFOOD, NCLEAR, NENERGY, NLOVE, NSLEEP, NLIFE, ACTION),
     decreaseTurn(NFOOD, NCLEAR, NENERGY, NLOVE, NLIFE, DFOOD, DCLEAR, DENERGY, DLOVE, DLIFE),
-    mainCircle(NAME, DCLEAR, DFOOD, DENERGY, DLOVE, DLIFE, NSLEEP).
+    mainCircle(NAME, DFOOD, DCLEAR, DENERGY, DLOVE, DLIFE, NSLEEP).
 
 getAction(ACTION):-
     writeln("1- Alimentar"),
     writeln("2- Limpar"),
     writeln("3- Dormir"),
     writeln("4- Dar carinho"),
+    writeln("5- Aplicar injeção"),
     read(ACTION).
 
 actionGame(FOOD, CLEAR, ENERGY, LOVE, _, LIFE, NFOOD, NCLEAR, NENERGY, NLOVE, NSLEEP, LIFE, 1):- % alimentar
@@ -44,9 +59,9 @@ actionGame(FOOD, CLEAR, ENERGY, LOVE, _, LIFE, NFOOD, NCLEAR, NENERGY, NLOVE, NS
     NENERGY is ENERGY,
     NLOVE is LOVE + 5,
     NSLEEP=false.
-actionGame(FOOD, _, ENERGY, LOVE, _, LIFE, NFOOD, NCLEAR, NENERGY, NLOVE, NSLEEP, LIFE, 2):- % limpar
+actionGame(FOOD, CLEAR, ENERGY, LOVE, _, LIFE, NFOOD, NCLEAR, NENERGY, NLOVE, NSLEEP, LIFE, 2):- % limpar
     NFOOD is FOOD,
-    NCLEAR is 100,
+    NCLEAR is CLEAR + 45,
     NENERGY is ENERGY,
     NLOVE is LOVE + 5,
     NSLEEP=false.
@@ -63,11 +78,18 @@ actionGame(FOOD, CLEAR, ENERGY, LOVE, _, LIFE, NFOOD, NCLEAR, NENERGY, NLOVE, NS
     NENERGY is ENERGY,
     NLOVE is LOVE + 40,
     NSLEEP=false.
+actionGame(FOOD, CLEAR, ENERGY, LOVE, _, LIFE, NFOOD, NCLEAR, NENERGY, NLOVE, NSLEEP, NLIFE, 5):- % dar carinho
+    NFOOD is FOOD,
+    NCLEAR is CLEAR,
+    NENERGY is ENERGY,
+    NLOVE is LOVE - 30,
+    NLIFE is LIFE + 50,
+    NSLEEP=false.
 
 actionSleep(NAME, FOOD, CLEAR, ENERGY, LOVE, LIFE, SLEEP, 2):- % continuar dormindo
     actionGame(FOOD, CLEAR, ENERGY, LOVE, SLEEP, LIFE, NFOOD, NCLEAR, NENERGY, NLOVE, NSLEEP, NLIFE, 3),
     decreaseTurn(NFOOD, NCLEAR, NENERGY, NLOVE, NLIFE, DFOOD, DCLEAR, DENERGY, DLOVE, DLIFE),
-    mainCircle(NAME, DCLEAR, DFOOD, DENERGY, DLOVE, DLIFE, NSLEEP).
+    mainCircle(NAME, DFOOD, DCLEAR, DENERGY, DLOVE, DLIFE, NSLEEP).
 actionSleep(NAME, FOOD, CLEAR, ENERGY, LOVE, LIFE, _, 1):- % acordar
     NFOOD is FOOD,
     NCLEAR is CLEAR,
@@ -75,7 +97,7 @@ actionSleep(NAME, FOOD, CLEAR, ENERGY, LOVE, LIFE, _, 1):- % acordar
     NLOVE is LOVE + 5,
     NSLEEP=false,
     decreaseTurn(NFOOD, NCLEAR, NENERGY, NLOVE, LIFE, DFOOD, DCLEAR, DENERGY, DLOVE, DLIFE),
-    mainCircle(NAME, DCLEAR, DFOOD, DENERGY, DLOVE, DLIFE, NSLEEP).
+    mainCircle(NAME, DFOOD, DCLEAR, DENERGY, DLOVE, DLIFE, NSLEEP).
 
 getActionSleep(ACTION):-
     writeln("1- Acordar"),
