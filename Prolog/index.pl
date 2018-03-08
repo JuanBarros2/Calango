@@ -1,4 +1,5 @@
 :- initialization(mainCircle(juan, 100, 100, 100, 100, 100, false)).
+nome(juan).
 
 main:-  write("    CALANGO"), nl,
         write("    1- Jogar"), nl,
@@ -31,6 +32,7 @@ tableInstruction:-
 startGame:-
     writeln("Digite o nome do seu calango:"),
     read(NAME),
+    assert(nome(NAME)),
     mainCircle(NAME, 100, 100, 100, 100, 100, false).
 
 mainCircle(NAME, _, _, _, _, 0, _):- write(NAME), write(" morreu").
@@ -51,6 +53,7 @@ getAction(ACTION):-
     writeln("3- Dormir"),
     writeln("4- Dar carinho"),
     writeln("5- Aplicar injeção"),
+    writeln("0- Matar calango"),
     read(ACTION).
 
 actionGame(FOOD, CLEAR, ENERGY, LOVE, _, LIFE, NFOOD, NCLEAR, NENERGY, NLOVE, NSLEEP, LIFE, 1):- % alimentar
@@ -85,6 +88,8 @@ actionGame(FOOD, CLEAR, ENERGY, LOVE, _, LIFE, NFOOD, NCLEAR, NENERGY, NLOVE, NS
     NLOVE is LOVE - 30,
     NLIFE is LIFE + 50,
     NSLEEP=false.
+actionGame(_, _, _, _, _, _, _, _, _, _, _, _, ACTION):- nome(NAME), mainCircle(JUAN, _, _, _, _, ACTION, _). % matar
+
 
 actionSleep(NAME, FOOD, CLEAR, ENERGY, LOVE, LIFE, SLEEP, 2):- % continuar dormindo
     actionGame(FOOD, CLEAR, ENERGY, LOVE, SLEEP, LIFE, NFOOD, NCLEAR, NENERGY, NLOVE, NSLEEP, NLIFE, 3),
@@ -104,34 +109,23 @@ getActionSleep(ACTION):-
     writeln("2- Continuar dormindo"),
     read(ACTION).
 
-
-decreaseTurn(FOOD, CLEAR, ENERGY, LOVE, LIFE, NFOOD, NCLEAR, NENERGY, NLOVE, NLIFE):-
+hasDiscounted(FOOD, CLEAR, ENERGY, LOVE, LIFE, NFOOD, NCLEAR, NENERGY, NLOVE, NLIFE):-
     NFOOD is FOOD - 5,
     NCLEAR is CLEAR - 10,
     NENERGY is ENERGY - 5,
     NLOVE is LOVE - 10,
-    NLIFE is LIFE - 20,
+    NLIFE is LIFE - 20.
+decreaseTurn(FOOD, CLEAR, ENERGY, LOVE, LIFE, NFOOD, NCLEAR, NENERGY, NLOVE, NLIFE):-
+    hasDiscounted(FOOD, CLEAR, ENERGY, LOVE, LIFE, NFOOD, NCLEAR, NENERGY, NLOVE, NLIFE),
     criticalLove(NLOVE).
 decreaseTurn(FOOD, CLEAR, ENERGY, LOVE, LIFE, NFOOD, NCLEAR, NENERGY, NLOVE, NLIFE):-
-    NFOOD is FOOD - 5,
-    NCLEAR is CLEAR - 10,
-    NENERGY is ENERGY - 5,
-    NLOVE is LOVE - 10,
-    NLIFE is LIFE - 20,
+    hasDiscounted(FOOD, CLEAR, ENERGY, LOVE, LIFE, NFOOD, NCLEAR, NENERGY, NLOVE, NLIFE),
     criticalFood(NFOOD).
 decreaseTurn(FOOD, CLEAR, ENERGY, LOVE, LIFE, NFOOD, NCLEAR, NENERGY, NLOVE, NLIFE):-
-    NFOOD is FOOD - 5,
-    NCLEAR is CLEAR - 10,
-    NENERGY is ENERGY - 5,
-    NLOVE is LOVE - 10,
-    NLIFE is LIFE - 20,
+    hasDiscounted(FOOD, CLEAR, ENERGY, LOVE, LIFE, NFOOD, NCLEAR, NENERGY, NLOVE, NLIFE),
     criticalEnergy(NENERGY).
 decreaseTurn(FOOD, CLEAR, ENERGY, LOVE, LIFE, NFOOD, NCLEAR, NENERGY, NLOVE, NLIFE):-
-    NFOOD is FOOD - 5,
-    NCLEAR is CLEAR - 10,
-    NENERGY is ENERGY - 5,
-    NLOVE is LOVE - 10,
-    NLIFE is LIFE - 20,
+    hasDiscounted(FOOD, CLEAR, ENERGY, LOVE, LIFE, NFOOD, NCLEAR, NENERGY, NLOVE, NLIFE),
     criticalTrash(NCLEAR).
 decreaseTurn(FOOD, CLEAR, ENERGY, LOVE, LIFE, NFOOD, NCLEAR, NENERGY, NLOVE, LIFE):-
     NFOOD is FOOD - 5,
@@ -163,15 +157,10 @@ criticalTrash(CLEAR):-
 
 printInfo(NAME, FOOD, CLEAR, ENERGY, LOVE, LIFE):-
     writeln(NAME),
-    write("Comida: "),
-    writeln(FOOD),
-    write("Limpeza: "),
-    writeln(CLEAR),
-    write("Energia: "),
-    writeln(ENERGY),
-    write("Carinho: "),
-    writeln(LOVE),
-    write("Vida: "),
-    writeln(LIFE).
+    write("Comida: "), writeln(FOOD),
+    write("Limpeza: "), writeln(CLEAR),
+    write("Energia: "), writeln(ENERGY),
+    write("Carinho: "), writeln(LOVE),
+    write("Vida: "), writeln(LIFE).
 
 decreaseTurn:- write("").
