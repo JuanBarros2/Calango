@@ -1,5 +1,4 @@
-:- initialization(mainCircle(juan, 100, 100, 100, 100, 100, false)).
-nome(juan).
+:- initialization(main).
 
 main:-  write("    CALANGO"), nl,
         write("    1- Jogar"), nl,
@@ -32,7 +31,6 @@ tableInstruction:-
 startGame:-
     writeln("Digite o nome do seu calango:"),
     read(NAME),
-    assert(nome(NAME)),
     mainCircle(NAME, 100, 100, 100, 100, 100, false).
 
 mainCircle(NAME, _, _, _, _, 0, _):- write(NAME), write(" morreu").
