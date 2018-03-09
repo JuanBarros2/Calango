@@ -70,9 +70,10 @@ actionGame(FOOD, CLEAR, ENERGY, LOVE, _, LIFE, NFOOD, NCLEAR, NENERGY, NLOVE, NS
     NLOVE is LOVE + 5,
     NSLEEP=false.
 actionGame(FOOD, CLEAR, ENERGY, LOVE, _, LIFE, NFOOD, NCLEAR, NENERGY, NLOVE, NSLEEP, NLIFE, 3):- % dormir
+    checkUpperLimits(ENERGY + 25, Z),
     NFOOD is FOOD,
     NCLEAR is CLEAR,
-    NENERGY is ENERGY + 25,
+    NENERGY is Z + 5,
     NLOVE is LOVE,
     NLIFE is LIFE + 2,
     NSLEEP=true.
