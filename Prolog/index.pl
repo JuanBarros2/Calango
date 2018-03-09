@@ -1,12 +1,18 @@
 :- initialization(main).
 
-main:-  write("    CALANGO"), nl,
-        write("    1- Jogar"), nl,
-        write("    2- Instruções"), nl,
-        write("    3- Sair"), nl,
-        read(INPUT),
-        menuInit(INPUT),
-        main.
+main:-
+    separator,  
+    write("|                                               |"), nl,
+    write("|                CALANGO                        |"), nl,
+    write("|                                               |"), nl,
+    write("|           1- Jogar                            |"), nl,
+    write("|           2- Instruções                       |"), nl,
+    write("|           3- Sair                             |"), nl,
+    write("|                                               |"), nl,
+    separator,
+    read(INPUT),
+    menuInit(INPUT),
+    main.
 
 menuInit(1):- startGame.
 menuInit(2):- instructions.
@@ -32,13 +38,17 @@ startGame:-
     writeln("Digite o nome do seu calango:"),
     read(NAME),
     assert(nome(NAME)),
-    mainCircle(NAME, 100, 100, 100, 100, 100, false).
+    mainCircle(NAME, 80, 100, 100, 100, 100, false).
 
-mainCircle(NAME, _, _, _, _, 0, _):- write(NAME), write(" morreu").
+mainCircle(NAME, _, _, _, _, 0, _):- nl, separator, nl, nl, 
+    write("                     _.....---..._\n      _..-'-.   _.--'             '--.._\n  _.-' (  #) Y''      2017☻ - 2018┼     ''-.._\n (---.._,                                     '-._\n  `-U-.,___.-\\  \\----......./  /..------...____   '-.\n     _/  /  _/  /         __\\  \\   __\\  \\      `-.   \\\n    (((-'  (((-'         (((---'  (((---`         )  /\n                                               .-'.-'\n                                              (__`-,\n                                                 ``\n"),
+    write(NAME), write(" morreu :("), nl, nl, separator, main.
+
 mainCircle(NAME, FOOD, CLEAR, ENERGY, LOVE, LIFE, true):-
     printInfo(NAME, FOOD, CLEAR, ENERGY, LOVE, LIFE),
     getActionSleep(ACTION),
     actionSleep(NAME, FOOD, CLEAR, ENERGY, LOVE, LIFE, true, ACTION).
+
 mainCircle(NAME, FOOD, CLEAR, ENERGY, LOVE, LIFE, SLEEP):-
     printInfo(NAME, FOOD, CLEAR, ENERGY, LOVE, LIFE),
     getAction(ACTION),
@@ -153,13 +163,13 @@ criticalTrash(CLEAR):-
 
 
 printInfo(NAME, FOOD, CLEAR, ENERGY, LOVE, LIFE):-
-    separator,
-    writeln(NAME),
-    write("Comida: "), writeln(FOOD),
-    write("Limpeza: "), writeln(CLEAR),
-    write("Energia: "), writeln(ENERGY),
-    write("Carinho: "), writeln(LOVE),
-    write("Vida: "), writeln(LIFE), nl.
+    separator, nl,
+    write("                     _.....---..._\n      _..-'-.   _.--'             '--.._\n  _.-' (  0) Y''                        ''-.._\n (---.._,                                     '-._\n  `---.,___.-\\  \\----......./  /..------...____   '-.\n     _/  /  _/  /         __\\  \\   __\\  \\      `-.   \\\n    (((-'  (((-'         (((---'  (((---`         )  /\n                                               .-'.-'\n                                              (__`-,\n                                                 ``\n"),
+    write("Comida: "), write(FOOD), writeln("%"),
+    write("Limpeza: "), write(CLEAR), writeln("%"),
+    write("Energia: "), write(ENERGY), writeln("%"),
+    write("Carinho: "), write(LOVE), writeln("%"),
+    write("Vida: "), write(LIFE),  writeln("%"), nl.
 
 decreaseTurn:- write("").
 separator:- writeln("=================================================").
